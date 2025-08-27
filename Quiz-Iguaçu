@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz: Você Sobreviveria a uma Entrevista de Emprego em Inglês?</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 20px; }
+        #form-container, #quiz-container, #resultado { max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        #quiz-container, #resultado { display: none; }
+        h1 { text-align: center; color: #333; }
+        #pergunta { font-size: 18px; margin-bottom: 20px; }
+        .opcao { display: block; background: #e0e0e0; padding: 10px; margin: 10px 0; border-radius: 5px; cursor: pointer; text-align: center; }
+        .opcao.selected { background: #4CAF50; color: white; }
+        #proximo { background: #2196F3; color: white; border: none; padding: 10px; width: 100%; border-radius: 5px; cursor: pointer; }
+        #progresso { margin-bottom: 20px; font-size: 14px; text-align: center; }
+        form { margin-top: 20px; }
+        input, select { display: block; width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; }
+        button[type="submit"] { background: #FF5722; color: white; border: none; padding: 10px; width: 100%; border-radius: 5px; cursor: pointer; }
+        #resultado { text-align: center; background: #e8f5e9; border: 2px solid #4CAF50; }
+        #resultado h2 { font-size: 28px; color: #4CAF50; }
+        #pontuacao, #nivel { font-size: 20px; margin: 10px 0; }
+        #mensagem-envio { font-size: 18px; color: #4CAF50; font-weight: bold; }
+        @media (max-width: 600px) { #form-container, #quiz-container, #resultado { padding: 10px; } }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+</head>
+<body>
+    <div id="form-container">
+        <h1>Você Sobreviveria a uma Entrevista de Emprego em Inglês?</h1>
+        <p>Criado pelo Centro de Ensino Fisk para funcionários da CIA Iguaçu de Café Solúvel S/A. Preencha seus dados para iniciar o quiz.</p>
+        <form id="lead-form">
+            <input type="text" id="nome" name="nome" placeholder="Nome Completo" required>
+            <input type="text" id="endereco" name="endereco" placeholder="Endereço" required>
+            <input type="tel" id="telefone" name="telefone" placeholder="Telefone" required>
+            <input type="number" id="idade" name="idade" placeholder="Idade" required min="18">
+            <select id="fez_ingles" name="fez_ingles" required>
+                <option value="">Já estudou inglês antes?</option>
+                <option value="Sim">Sim</option>
+                <option value="Não">Não</option>
+            </select>
+            <input type="text" id="onde_fez" name="onde_fez" placeholder="Onde estudou? (se sim)">
+            <button type="submit">Iniciar Quiz</button>
+        </form>
+    </div>
+    <div id="quiz-container">
+        <h1>Você Sobreviveria a uma Entrevista de Emprego em Inglês?</h1>
+        <p>Quiz by Fisk Language Center for CIA Iguaçu de Café Solúvel S/A employees.</p>
+        <p id="progresso"></p>
+        <div id="pergunta"></div>
+        <div id="opcoes"></div>
+        <button id="proximo">Next</button>
+    </div>
+    <div id="resultado">
+        <h2>🎉 Your Result! 🎉</h2>
+        <p id="pontuacao"></p>
+        <p id="nivel"></p>
+        <p id="mensagem-envio" style="display: none;">Dados enviados com sucesso! Obrigado por participar. A Fisk entrará em contato com dicas personalizadas. Compartilhe sua pontuação com amigos!</p>
+        <p id="mensagem-erro" style="color: red; display: none;">Erro ao enviar dados. Tente novamente.</p>
+    </div>
+
+    <script>
+        (function() {
+            emailjs.init({ publicKey: 'TEEVLvd2vl-pnycUF' });
+        })();
+
+        const perguntas = [
+            {
+                pergunta: "Tell me about yourself.",
+                opcoes: ["A) I was born in a small town, I like soccer and have two dogs.", "B) I have a degree in administration, with 5 years of experience in logistics, and I'm looking for opportunities to apply my skills in dynamic teams.", "C) My life is complicated, but I'm here because I need the job."],
+                respostaCorreta: 1 // B correta
+            },
+            {
+                pergunta: "Why do you want to work at this company?",
+                opcoes: ["A) I admire the company's leadership in the soluble coffee sector and believe my production experience can contribute to sustainable innovations.", "B) Because the salary is good and it's close to home.", "C) Any company will do, as long as they hire me."],
+                respostaCorreta: 0 // A correta
+            },
+            {
+                pergunta: "What is your greatest weakness?",
+                opcoes: ["A) I'm a perfectionist and work too much.", "B) I have no weaknesses; I'm great at everything.", "C) Sometimes I'm too detail-oriented, which leads me to review tasks multiple times, but I'm learning to prioritize with time management tools."],
+                respostaCorreta: 2 // C correta
+            },
+            {
+                pergunta: "Describe a situation where you handled a conflict at work.",
+                opcoes: ["A) I argued with the colleague and quit.", "B) In a previous team, a colleague was delaying deliveries. I talked openly with him, identified the problem, and adjusted the schedule, resulting in on-time delivery.", "C) I ignored the conflict and waited for it to pass."],
+                respostaCorreta: 1 // B correta
+            },
+            {
+                pergunta: "Where do you see yourself in five years?",
+                opcoes: ["A) Contributing in a leadership role in operations, after gaining more experience and relevant certifications.", "B) In your position, as manager.", "C) In another company, earning more money."],
+                respostaCorreta: 0 // A correta
+            },
+            {
+                pergunta: "Why did you leave your previous job?",
+                opcoes: ["A) My boss was terrible and the company was messy.", "B) I was fired due to their mistake.", "C) I sought new challenges to grow professionally, after completing key projects there."],
+                respostaCorreta: 2 // C correta
+            },
+            {
+                pergunta: "Do you have any questions for us?",
+                opcoes: ["A) No, I'm good.", "B) How much is the salary and when are the vacations?", "C) How does the company support employee professional development, such as trainings or courses?"],
+                respostaCorreta: 2 // C correta
+            }
+        ];
+
+        let perguntaAtual = 0;
+        let respostasUsuario = [];
+        let formData = {};
+        const formContainer = document.getElementById('form-container');
+        const quizContainer = document.getElementById('quiz-container');
+        const resultado = document.getElementById('resultado');
+        const perguntaElem = document.getElementById('pergunta');
+        const opcoesElem = document.getElementById('opcoes');
+        const proximoBtn = document.getElementById('proximo');
+        const pontuacaoElem = document.getElementById('pontuacao');
+        const nivelElem = document.getElementById('nivel');
+        const progressoElem = document.getElementById('progresso');
+        const leadForm = document.getElementById('lead-form');
+        const mensagemEnvio = document.getElementById('mensagem-envio');
+        const mensagemErro = document.getElementById('mensagem-erro');
+
+        leadForm.onsubmit = function(e) {
+            e.preventDefault();
+            formData = {
+                nome: document.getElementById('nome').value,
+                endereco: document.getElementById('endereco').value,
+                telefone: document.getElementById('telefone').value,
+                idade: document.getElementById('idade').value,
+                fez_ingles: document.getElementById('fez_ingles').value,
+                onde_fez: document.getElementById('onde_fez').value
+            };
+            formContainer.style.display = 'none';
+            quizContainer.style.display = 'block';
+            carregarPergunta();
+        };
+
+        function carregarPergunta() {
+            const p = perguntas[perguntaAtual];
+            progressoElem.textContent = `Question ${perguntaAtual + 1} of ${perguntas.length}`;
+            perguntaElem.textContent = p.pergunta;
+            opcoesElem.innerHTML = '';
+            p.opcoes.forEach((opcao, index) => {
+                const div = document.createElement('div');
+                div.classList.add('opcao');
+                div.textContent = opcao;
+                div.onclick = () => selecionarOpcao(index);
+                opcoesElem.appendChild(div);
+            });
+            proximoBtn.disabled = true;
+        }
+
+        function selecionarOpcao(index) {
+            const opcoes = document.querySelectorAll('.opcao');
+            opcoes.forEach(op => op.classList.remove('selected'));
+            opcoes[index].classList.add('selected');
+            respostasUsuario[perguntaAtual] = index;
+            proximoBtn.disabled = false;
+        }
+
+        proximoBtn.onclick = () => {
+            if (perguntaAtual < perguntas.length - 1) {
+                perguntaAtual++;
+                carregarPergunta();
+            } else {
+                calcularResultado();
+            }
+        };
+
+        function calcularResultado() {
+            let acertos = 0;
+            perguntas.forEach((p, i) => {
+                if (respostasUsuario[i] === p.respostaCorreta) acertos++;
+            });
+            acertosGlobal = acertos;
+            nivelGlobal = acertos <= 3 ? 'Beginner - needs improvement.' : acertos <= 5 ? 'Intermediate - almost there, but can improve.' : 'Advanced - ready for a real interview!';
+            pontuacaoElem.textContent = `You got ${acertos} out of ${perguntas.length} questions right.`;
+            nivelElem.textContent = nivelGlobal;
+            quizContainer.style.display = 'none';
+            resultado.style.display = 'block';
+            enviarDados();
+        }
+
+        function enviarDados() {
+            const fullData = { ...formData, acertos: acertosGlobal, nivel: nivelGlobal };
+            emailjs.send('service_1n0xr6m', 'template_8ga437b', fullData)
+                .then(() => {
+                    mensagemEnvio.style.display = 'block';
+                }, (error) => {
+                    mensagemErro.style.display = 'block';
+                    mensagemErro.textContent = 'Error sending: ' + JSON.stringify(error);
+                });
+        }
+    </script>
+</body>
+</html>
